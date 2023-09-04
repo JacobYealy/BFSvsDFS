@@ -1,12 +1,22 @@
 import csv
 from collections import deque
 
+# =============================================================================
+# main.py
+# Jacob Yealy
+# Artificial Intelligence
+#
+# Description:
+# This file takes an input CSV from the local directory and uses its contents
+# to determine if a DFS or BFS algorithm can find the path from the start node
+# to the end node.
+#
+# =============================================================================
 
 class Node:
     def __init__(self, value):
         self.value = value
-        self.parent = None
-
+        self.parent = None # for backtrack
 
 class Graph:
     def __init__(self):
@@ -17,11 +27,22 @@ class Graph:
             self.adj_list[from_node] = []
         self.adj_list[from_node].append(to_node)
 
-
 def breadth_first_search(graph, start_value, goal_value):
+    """
+        Perform Breadth-First Search (BFS) to find the shortest path from the start node to the goal node.
+
+        Parameters:
+        - graph: a Graph object that describes the layout of nodes and edges.
+        - start_value: the value of the node from where the search starts.
+        - goal_value: the value of the node where the search ends.
+
+        Returns:
+        - A list representing the shortest path from start_value to goal_value, or None if no path exists.
+        """
     start_node = Node(start_value)
     goal_node = Node(goal_value)
     visited = set()
+
     queue = deque([start_node])
 
     while queue:
@@ -45,11 +66,22 @@ def breadth_first_search(graph, start_value, goal_value):
 
     return None
 
-
 def depth_first_search(graph, start_value, goal_value):
+    """
+        Perform Depth-First Search (DFS) to find a path from the start node to the goal node.
+
+        Parameters:
+        - graph: a Graph object that describes the layout of nodes and edges.
+        - start_value: the value of the node from where the search starts.
+        - goal_value: the value of the node where the search ends.
+
+        Returns:
+        - A list representing a path from start_value to goal_value found by DFS, or None if no path exists.
+        """
     start_node = Node(start_value)
     goal_node = Node(goal_value)
     visited = set()
+
     stack = [start_node]
 
     while stack:
@@ -73,46 +105,62 @@ def depth_first_search(graph, start_value, goal_value):
 
     return None
 
+def load_graph_from_csv(file_name):
+    """
+        Load a graph from a CSV file and return it as a Graph object.
 
-# Load graph from CSV
-graph = Graph()
-file_name = input("Please enter the file name and extension: ")
+        Parameters:
+        - file_name (str): The name of the CSV file containing the graph data.
+                           The file should be formatted with each row representing an edge.
+                           The first entry of each row is the 'from' node and next entries are to nodes.
 
-try:
-    with open(file_name, 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        for row in reader:
-            graph.add_edge(row[0], row[1])
-    print("Loading file…")
-except FileNotFoundError:
-    print("File not found.")
-    exit(1)
+        Returns:
+        - Graph: A Graph object representing the loaded graph.
 
-# Get start and end nodes
-try:
-    start_node = input("Start node (1 – 200): ")
-    end_node = input("End Node (1 – 200): ")
-
-    if not (1 <= int(start_node) <= 200) or not (1 <= int(end_node) <= 200):
-        print("Node ID out of range.")
+        Exceptions:
+        - FileNotFoundError: If the specified file does not exist, a message is printed and the program exits.
+        """
+    graph = Graph()
+    try:
+        with open(file_name, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                from_node = row[0]
+                to_nodes = [node for node in row[1:] if node]
+                for to_node in to_nodes:
+                    graph.add_edge(from_node, to_node)
+        print("Loading file…")
+        return graph
+    except FileNotFoundError:
+        print("File not found.")
         exit(1)
-except ValueError:
-    print("Invalid input. Please enter integers.")
-    exit(1)
 
-# Run BFS and DFS
-bfs_path = breadth_first_search(graph, start_node, end_node)
-dfs_path = depth_first_search(graph, start_node, end_node)
+if __name__ == "__main__":
+    file_name = input("Please enter a local csv file: ")
+    graph = load_graph_from_csv(file_name)
 
-# Output results
-if bfs_path:
-    print("Breadth-first traversal")
-    print(" – ".join(bfs_path))
-else:
-    print("No path found in Breadth-first traversal.")
+    try:
+        start_node = input("Start node (1 – 200): ")
+        end_node = input("End Node (1 – 200): ")
 
-if dfs_path:
-    print("Depth-first Search")
-    print(" – ".join(dfs_path))
-else:
-    print("No path found in Depth-first Search.")
+        if not (1 <= int(start_node) <= 200) or not (1 <= int(end_node) <= 200):
+            print("Node out of range.")
+            exit(1)
+    except ValueError:
+        print("Invalid input. Please enter integers from 1 - 200.")
+        exit(1)
+
+    bfs_path = breadth_first_search(graph, start_node, end_node)
+    dfs_path = depth_first_search(graph, start_node, end_node)
+
+    if bfs_path:
+        print("BFS:")
+        print(" – ".join(bfs_path))
+    else:
+        print("No path found in Breadth first search.")
+
+    if dfs_path:
+        print("DFS:")
+        print(" – ".join(dfs_path))
+    else:
+        print("No path found in Depth-first search.")
