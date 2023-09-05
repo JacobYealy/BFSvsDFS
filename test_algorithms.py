@@ -34,7 +34,7 @@ class TestBFS(unittest.TestCase):
 
     def test_bfs_invalid_start_node(self):
         graph = load_graph_from_csv('BFS_DFS.csv')
-        start_node = '300' #Node DNE
+        start_node = '300' #Node DNE in BFS file
         end_node = '4'
         result = breadth_first_search(graph, start_node, end_node)
         self.assertIsNone(result)

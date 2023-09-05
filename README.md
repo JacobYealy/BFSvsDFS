@@ -1,12 +1,13 @@
 # Depth First Search vs. Breadth First Search
-- Jacob Yealy
-- CSC 462 - Artificial Intelligence
-- 09/02/2023
+Jacob Yealy  
+CSC 462 - Artificial Intelligence  
+09/02/2023
 # Purpose
 The purpose of this project is to create a DFS algorithm and a BFS algorithm that can traverse an input csv file.
 If the file is not found, the program will let you know the file is invalid and exit.
 ## Instructions:
 * To make sure that your input csv file can run, place it in the same local directory as the project.
+* Ensure that any input CSV file is comma separated. 
 * Ensure that the start and end nodes you choose are valid.
 
 # Testing:

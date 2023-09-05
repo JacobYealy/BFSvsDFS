@@ -135,20 +135,28 @@ def load_graph_from_csv(file_name):
         print("File not found.")
         exit(1)
 
+
 if __name__ == "__main__":
     file_name = input("Please enter a local csv file: ")
     graph = load_graph_from_csv(file_name)
 
-    try:
-        start_node = input("Start node (1 – 200): ")
-        end_node = input("End Node (1 – 200): ")
+    # Filter out non-integer keys from the adjacency list
+    valid_keys = [node for node in graph.adj_list.keys() if node.isnumeric()]
 
-        if not (1 <= int(start_node) <= 200) or not (1 <= int(end_node) <= 200):
+    min_node = min(int(node) for node in valid_keys)
+    max_node = max(int(node) for node in valid_keys)
+
+    try:
+        start_node = input(f"Start node ({min_node} – {max_node}): ")
+        end_node = input(f"End Node ({min_node} – {max_node}): ")
+
+        if not (min_node <= int(start_node) <= max_node) or not (min_node <= int(end_node) <= max_node):
             print("Node out of range.")
             exit(1)
     except ValueError:
-        print("Invalid input. Please enter integers from 1 - 200.")
+        print(f"Invalid input. Please enter integers from {min_node} - {max_node}.")
         exit(1)
+
 
     bfs_path = breadth_first_search(graph, start_node, end_node)
     dfs_path = depth_first_search(graph, start_node, end_node)
