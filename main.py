@@ -77,21 +77,17 @@ def depth_first_search(graph, start_value, goal_value):
 
         Returns:
         - A list representing a path from start_value to goal_value found by DFS, or None if no path exists.
-        """
+    """
     start_node = Node(start_value)
     goal_node = Node(goal_value)
     visited = set()
 
-    stack = [start_node]
+    stack = [(start_node, [start_node.value])]  # Tuple for dynamic update to path
 
     while stack:
-        current_node = stack.pop()
+        current_node, path = stack.pop()  # Pop path with node for memory efficiency
 
         if current_node.value == goal_node.value:
-            path = []
-            while current_node:
-                path.insert(0, current_node.value)
-                current_node = current_node.parent
             return path
 
         visited.add(current_node.value)
@@ -100,10 +96,13 @@ def depth_first_search(graph, start_value, goal_value):
             if neighbor not in visited:
                 neighbor_node = Node(neighbor)
                 neighbor_node.parent = current_node
-                stack.append(neighbor_node)
+                new_path = list(path)
+                new_path.append(neighbor)
+                stack.append((neighbor_node, new_path))
                 visited.add(neighbor)
 
     return None
+
 
 def load_graph_from_csv(file_name):
     """
